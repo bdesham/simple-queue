@@ -60,28 +60,3 @@
   (.offerLast (:queue queue)
               {:value item,
                :promise nil}))
-
-
-
-
-
-;(defn- process-queue-item
-;  [item]
-;  (let [method (:method item),
-;        args (:args item),
-;        prom (:promise item)]
-;    (println ">>" (name method) args)
-;    (deliver prom (cumtd-fetch method args))))
-;
-;(defn cumtd-data
-;  [method args]
-;  (if-let [cache (cache-contents-or-nil method args)]
-;    (do (println "--" (name method) args)
-;      cache)
-;    (let [p (promise)]
-;      (offer! cumtd-queue
-;              {:method method
-;               :args args
-;               :promise p})
-;      @p)))
-;
