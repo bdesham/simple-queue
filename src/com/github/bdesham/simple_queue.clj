@@ -1,4 +1,4 @@
-(ns simple-queue)
+(ns com.github.bdesham/simple-queue)
 
 (defn new-queue
   "Creates a new queue. Each trigger from the timer will cause the function f

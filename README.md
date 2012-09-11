@@ -4,8 +4,8 @@ Process a queue of tasks, waiting in between.
 
 ## Usage
 
-1. Add `[com.bdesham.github/simple-queue "0.5.0"]` to your `:dependencies` vector.
-2. Add `(:use [com.bdesham.github/simple-queue :as q])` to your library’s `ns` macro.
+1. Add `[com.github.bdesham/simple-queue "0.5.1"]` to your `:dependencies` vector.
+2. Add `(:use [com.github.bdesham/simple-queue :as q])` to your library’s `ns` macro.
 3. Instantiate a queue with `(def my-queue (q/new-queue f))`.
 4. Add items with `(q/process queue item)` or `(q/add queue item)`.
 
