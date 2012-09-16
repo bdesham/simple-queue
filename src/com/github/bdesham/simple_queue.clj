@@ -1,4 +1,5 @@
-(ns com.github.bdesham.simple-queue)
+(ns com.github.bdesham.simple-queue
+  (:import (java.util.concurrent Executors TimeUnit)))
 
 (defn new-queue
   "Creates a new queue. Each trigger from the timer will cause the function f
@@ -25,17 +26,17 @@
                       (select-keys (apply hash-map opts) [:delaytime])),
         delaytime (:delaytime options),
         queue {:queue (java.util.concurrent.LinkedBlockingQueue.)},
-        task (proxy [java.util.TimerTask] []
-               (run []
-                 (let [item (.take (:queue queue)),
-                       value (:value item),
-                       prom (:promise item)]
-                   (if prom
-                     (deliver prom (f value))
-                     (f value))))),
-        timer (java.util.Timer.)]
-    (.schedule timer task 0 (int (* 1000 delaytime)))
-    (assoc queue :timer timer)))
+        func #(let [item (.take (:queue queue)),
+                    value (:value item),
+                    prom (:promise item)]
+                (if prom
+                  (deliver prom (f value))
+                  (f value))),
+        pool (Executors/newScheduledThreadPool 1),
+        task (.scheduleWithFixedDelay pool func
+                                      0 (long (* 1000 delaytime))
+                                      TimeUnit/MILLISECONDS)]
+    (assoc queue :task task)))
 
 (defn cancel
   "Permanently stops execution of the queue. If a task is already executing
