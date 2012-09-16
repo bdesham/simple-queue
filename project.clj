@@ -1,4 +1,4 @@
-(defproject com.github.bdesham/simple-queue "0.5.2"
+(defproject com.github.bdesham/simple-queue "0.6.0"
             :description "Process a queue of tasks, waiting in between"
             :url "https://github.com/bdesham/simple-queue"
             :license {:name "Eclipse Public License"

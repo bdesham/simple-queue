@@ -4,7 +4,7 @@ Process a queue of tasks, waiting in between.
 
 ## Usage
 
-1. Add `[com.github.bdesham/simple-queue "0.5.1"]` to your `:dependencies` vector.
+1. Add `[com.github.bdesham/simple-queue "0.6.0"]` to your `:dependencies` vector.
 2. Add `(:use [simple-queue :as q])` to your library’s `ns` macro.
 3. Instantiate a queue with `(def my-queue (q/new-queue f))`.
 4. Add items with `(q/process my-queue item)` or `(q/add my-queue item)`.
@@ -43,7 +43,7 @@ The other function, `add`, returns immediately but discards the result of callin
 (q/add my-queue "Hi there!") ; returns immediately and prints later
 ```
 
-The library also contains a function `cancel` that stops processing the queue. If an action is already in progress then it is allowed to complete.
+The library also contains a function `cancel` that stops processing the queue. If an action is already in progress then it may complete; if `cancel` is called while the queue is pausing before the next item then that next item will not be processed.
 
 ```clj
 (q/cancel my-queue)
