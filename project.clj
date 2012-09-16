@@ -5,4 +5,4 @@
                       :url "http://www.eclipse.org/legal/epl-v10.html"
                       :comments "Same as Clojure"}
             :dependencies [[org.clojure/clojure "1.4.0"]]
-            :main simple-queue)
+            :main com.github.bdesham.simple-queue)
