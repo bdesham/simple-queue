@@ -17,16 +17,16 @@ This library maintains queues of objects. Each queue has an associated function 
 (def my-queue (q/new-queue println))
 ```
 
-This will create a queue that will print each successive item. You can also specify how long the queue should wait before processing the next item. Pass a number of seconds as the `:delaytime` argument to `new-queue`:
+This will create a queue that will print each successive item. You can also specify how long the queue should wait before processing the next item. Pass a number of seconds as the `:delay` argument to `new-queue`:
 
 ```clj
-(def my-queue (q/new-queue println :delaytime 60))
+(def my-queue (q/new-queue println :delay 60))
 ```
 
 This will create the same queue as before but with a one-minute delay between invocations of `f`. The delay time need not be an integer; to wait only 500 milliseconds between actions, use
 
 ```clj
-(def my-queue (q/new-queue println :delaytime 0.5))
+(def my-queue (q/new-queue println :delay 0.5))
 ```
 
 There are two functions you can use to add items to the queue. The first, `process`, blocks until the passed item has been processed:
@@ -54,7 +54,7 @@ The library also contains a function `cancel` that stops processing the queue. I
 Suppose we want to fetch a bunch of web pages, but in order to avoid flooding the server we’ll wait 30 seconds between requests. In this case let’s suppose that the items we’re putting into the queue are the URLs of the pages we want. This is easily done:
 
 ```clj
-(def url-queue (q/new-queue slurp :delaytime 30))
+(def url-queue (q/new-queue slurp :delay 30))
 (def github (q/process url-queue "https://github.com"))
 (def google (q/process url-queue "http://www.google.com"))
 ```
@@ -69,7 +69,7 @@ For a more complicated example, suppose that we want to add our URLs asynchronou
   (spit (java.io.File. filename)
         (slurp url)))
 
-(def url-queue (q/new-queue cache-url :delaytime 30))
+(def url-queue (q/new-queue cache-url :delay 30))
 (q/add url-queue {:url "https://github.com",
                   :filename "github.html"})    ; returns immediately
 (q/add url-queue {:url "https://google.com",
@@ -81,8 +81,6 @@ Now execution continues immediately after the two items are added to the queue, 
 ## Caveats
 
 This library hasn’t been tested very extensively yet! Use pre-1.0 versions at your own risk.
-
-The desired behavior of the queue is that the first task is executed immediately upon being added to the queue. This seems to be the case, but testing is required to make sure that the *second* item isn’t being processed too quickly.
 
 ## License
 

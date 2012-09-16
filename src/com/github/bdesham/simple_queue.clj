@@ -8,7 +8,8 @@
   queue is processed immediately.
 
   Options
-  - delaytime: time between invocations (in seconds). Defaults to one second.
+  - delay: time in seconds between invocations. Defaults to one second. May be
+    a non-integer value.
 
   Example usage:
 
@@ -16,15 +17,14 @@
   (def my-queue (q/new-queue println))
 
   ; Every minute, print the value of the next item in the queue
-  (def my-queue (q/new-queue println :delaytime 60))
+  (def my-queue (q/new-queue println :delay 60))
 
   ; If the items in the queue are functions that take no arguments, use this to
   ; execute one function every 500 milliseconds
-  (def my-queue (q/new-queue #(%) :delaytime 0.5))"
+  (def my-queue (q/new-queue #(%) :delay 0.5))"
   [f & opts]
-  (let [options (into {:delaytime 1}
-                      (select-keys (apply hash-map opts) [:delaytime])),
-        delaytime (:delaytime options),
+  (let [options (apply hash-map opts),
+        delaytime (get options :delay 1),
         queue {:queue (java.util.concurrent.LinkedBlockingQueue.)},
         func #(let [item (.take (:queue queue)),
                     value (:value item),
