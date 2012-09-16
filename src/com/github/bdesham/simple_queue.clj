@@ -40,24 +40,31 @@
 
 (defn cancel
   "Permanently stops execution of the queue. If a task is already executing
-  then it proceeds unharmed."
+  then it may or may not finish. If the queue is cancelled while it's delayed
+  waiting for the next item to be processed, that item will never be
+  processed."
   [queue]
-  (.cancel (:timer queue)))
+  (.cancel (:task queue) true))
 
 (defn process
-  "Adds an item to the queue, blocking until it has been processed. Returns
-  (f item)."
+  "Adds an item to the queue, blocking until it has been processed. Returns (f
+  item). If the queue has been cancelled, returns nil."
   [queue item]
-  (let [prom (promise)]
-    (.offer (:queue queue)
-            {:value item,
-             :promise prom})
-    @prom))
+  (if (.isCancelled (:task queue))
+    nil
+    (let [prom (promise)]
+      (.offer (:queue queue)
+              {:value item,
+               :promise prom})
+      @prom)))
 
 (defn add
   "Adds an item to the queue and returns immediately. The value of (f item) is
-  discarded, so presumably f has side effects if you're using this."
+  discarded, so presumably f has side effects if you're using this. Returns
+  true if the item was added, or false if the queue has been cancelled."
   [queue item]
-  (.offer (:queue queue)
-          {:value item,
-           :promise nil}))
+  (if (.isCancelled (:task queue))
+    false
+    (.offer (:queue queue)
+            {:value item,
+             :promise nil})))
