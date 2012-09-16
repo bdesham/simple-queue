@@ -24,10 +24,10 @@
   (let [options (into {:delaytime 1}
                       (select-keys (apply hash-map opts) [:delaytime])),
         delaytime (:delaytime options),
-        queue {:queue (java.util.concurrent.LinkedBlockingDeque.)},
+        queue {:queue (java.util.concurrent.LinkedBlockingQueue.)},
         task (proxy [java.util.TimerTask] []
                (run []
-                 (let [item (.takeFirst (:queue queue)),
+                 (let [item (.take (:queue queue)),
                        value (:value item),
                        prom (:promise item)]
                    (if prom
@@ -48,15 +48,15 @@
   (f item)."
   [queue item]
   (let [prom (promise)]
-    (.offerLast (:queue queue)
-                {:value item,
-                 :promise prom})
+    (.offer (:queue queue)
+            {:value item,
+             :promise prom})
     @prom))
 
 (defn add
   "Adds an item to the queue and returns immediately. The value of (f item) is
   discarded, so presumably f has side effects if you're using this."
   [queue item]
-  (.offerLast (:queue queue)
-              {:value item,
-               :promise nil}))
+  (.offer (:queue queue)
+          {:value item,
+           :promise nil}))
