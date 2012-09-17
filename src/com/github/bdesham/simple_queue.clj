@@ -1,5 +1,5 @@
 (ns com.github.bdesham.simple-queue
-  (:import (java.util.concurrent Executors TimeUnit)))
+  (:import (java.util.concurrent Executors TimeUnit LinkedBlockingQueue)))
 
 (defn new-queue
   "Creates a new queue. Each trigger from the timer will cause the function f
@@ -25,7 +25,7 @@
   [f & opts]
   (let [options (apply hash-map opts),
         delaytime (get options :delay 1),
-        queue {:queue (java.util.concurrent.LinkedBlockingQueue.)},
+        queue {:queue (LinkedBlockingQueue.)},
         func #(let [item (.take (:queue queue)),
                     value (:value item),
                     prom (:promise item)]
