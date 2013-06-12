@@ -32,11 +32,12 @@
                 (if prom
                   (deliver prom (f value))
                   (f value))),
-        pool (Executors/newScheduledThreadPool 1),
-        task (delay (.scheduleWithFixedDelay pool func
-                                             0 (long (* 1000 delaytime))
-                                             TimeUnit/MILLISECONDS))]
-    (assoc queue :task task)))
+        scheduler (delay (let [pool (Executors/newScheduledThreadPool 1),
+                               task (.scheduleWithFixedDelay pool func
+                                                             0 (long (* 1000 delaytime))
+                                                             TimeUnit/MILLISECONDS)]
+                           {:pool pool, :task task}))]
+    (assoc queue :scheduler scheduler)))
 
 (defn cancel
   "Permanently stops execution of the queue. If a task is already executing
@@ -44,15 +45,14 @@
   waiting for the next item to be processed, that item will never be
   processed."
   [queue]
-  (.cancel (deref (:task queue))
-           true))
+  (.shutdownNow (:pool (deref (:scheduler queue))))
+  nil)
 
 (defn process
   "Adds an item to the queue, blocking until it has been processed. Returns (f
   item). If the queue has been cancelled, returns nil."
   [queue item]
-  (if (.isCancelled (deref (:task queue)))
-    nil
+  (when-not (.isShutdown (:pool (deref (:scheduler queue))))
     (let [prom (promise)]
       (.offer (:queue queue)
               {:value item,
@@ -64,8 +64,7 @@
   discarded, so presumably f has side effects if you're using this. Returns
   true if the item was added, or false if the queue has been cancelled."
   [queue item]
-  (if (.isCancelled (deref (:task queue)))
-    false
+  (when-not (.isShutdown (:pool (deref (:scheduler queue))))
     (.offer (:queue queue)
             {:value item,
              :promise nil})))
