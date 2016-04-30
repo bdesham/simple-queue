@@ -4,12 +4,12 @@ Process a queue of tasks, waiting in between.
 
 ## Usage
 
-1. Add `[com.github.bdesham/simple-queue "0.6.1"]` to your `:dependencies` vector.
+1. Add `[com.github.bdesham/simple-queue "0.6.1"]` to your project’s dependencies.
 2. Add `(:use [simple-queue :as q])` to your library’s `ns` macro.
 3. Instantiate a queue with `(def my-queue (q/new-queue f))`.
 4. Add items with `(q/process my-queue item)` or `(q/add my-queue item)`.
 
-## Details
+### Details
 
 This library maintains queues of objects. Each queue has an associated function `f`: at some periodic interval (one second by default), the function `f` is called with the next queue item as its argument. This function is specified when you create the queue:
 
@@ -49,7 +49,7 @@ The library also contains a function `cancel` that stops processing the queue. I
 (q/cancel my-queue)
 ```
 
-## Example
+### Example
 
 Suppose we want to fetch a bunch of web pages, but in order to avoid flooding the server we’ll wait 30 seconds between requests. In this case let’s suppose that the items we’re putting into the queue are the URLs of the pages we want. This is easily done:
 
@@ -78,12 +78,16 @@ For a more complicated example, suppose that we want to add our URLs asynchronou
 
 Now execution continues immediately after the two items are added to the queue, and we’ll see the files “github.html” and “google.html” populated slowly as the queue executes.
 
-## Caveats
+### Caveats
 
-This library hasn’t been tested very extensively yet! Use pre-1.0 versions at your own risk.
+This library hasn’t been tested very extensively! Use it at your own risk.
+
+## Author
+
+This library was written by [Benjamin Esham](https://esham.io).
+
+This project is [hosted on GitHub](https://github.com/bdesham/simple-queue). Please feel free to submit pull requests.
 
 ## License
 
-Copyright © 2012 Benjamin D. Esham (www.bdesham.info).
-
-This project is distributed under the Eclipse Public License, the same as that used by Clojure. A copy of the license is included as “epl-v10.html” in this distribution.
+Copyright © 2012 Benjamin D. Esham. This project is distributed under the Eclipse Public License, the same as that used by Clojure. A copy of the license is included as “epl-v10.html” in this distribution.
