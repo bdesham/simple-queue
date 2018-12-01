@@ -2,6 +2,8 @@
 
 Process a queue of tasks, waiting in between.
 
+⚠️ **Notice:** This library is no longer maintained. It may have severe security or compatibility problems. Use it at your own risk!
+
 ## Usage
 
 1. Add `[com.github.bdesham/simple-queue "0.6.1"]` to your project’s dependencies.
@@ -86,7 +88,7 @@ This library hasn’t been tested very extensively! Use it at your own risk.
 
 This library was written by [Benjamin Esham](https://esham.io).
 
-This project is [hosted on GitHub](https://github.com/bdesham/simple-queue). Please feel free to submit pull requests.
+This project is [hosted on GitHub](https://github.com/bdesham/simple-queue). It is **no longer being developed** and is left on GitHub only in the hope that someone will find the code interesting or useful.
 
 ## License
 
